@@ -1,12 +1,14 @@
+
+export {}
 import { Client } from 'pg';
 
 
 const config = {
-    user: 'username',
-    password: 'password',
-    host: 'host',
-    port: 'port_number',
-    database: 'database_name',
+    user: 'postgres',
+    password: 'postgres',
+    host: 'localhost',
+    port: '5432',
+    database: 'postgres',
 }
 
 // const client = new Client(config);
@@ -41,4 +43,6 @@ const config = {
 //     });
 
 
-export default new Client(config);
+const client = new Client(config);
+
+export {client};
