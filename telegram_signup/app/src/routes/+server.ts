@@ -1,20 +1,25 @@
 import { json } from '@sveltejs/kit';
+import jwt from 'jsonwebtoken'
+import SessionStorage, { Session } from '../storage';
 
-type Login = {
+type SignUp = {
     telegramID: string;
     password: string;
 }
 
-var rand = function() {
-    return Math.random().toString(36).substr(2); // remove `0.`
-};
+function generateToken (telegramId: string, password: string, createdAt: string): string {
+    return jwt.sign({ telegramId, password}, `${createdAt}`);
+}
 
-var token = function() {
-    return rand() + rand() + rand() + "-" + rand() + rand() + rand(); // to make it longer
-};
-
+function saveSession(telegramId: string, password: string){
+    const createdAt= new Date().toUTCString();
+    const token = generateToken(telegramId, password, createdAt);
+    const session: Session = {token, telegramId, password, createdAt };
+    SessionStorage.saveSession(session);
+}
 
 export async function POST({ request }) {
-    const body: Login = await request.json();
-    return json({  }, { status: 201 });
+    const body: SignUp = await request.json();
+    saveSession(body.telegramID, body.password);
+    return json({ token: SessionStorage.getToken() }, { status: 201 });
 }

@@ -30,14 +30,16 @@
 
 <script>
     let telegramId, password;
-      const handleLogin = () => {
-        const response =  fetch('/', {
+    const handleSignUp = async () => {
+        const response = await fetch('/', {
             method: 'POST',
-            body: JSON.stringify({telegramID:telegramId, password: password  }),
+            body: JSON.stringify({ telegramID: telegramId, password: password }),
             headers: {
                 'Content-Type': 'application/json'
             }
         });
+        const { token } = await response.json();
+        prompt('save the token:', token);
     }
 
 </script>
@@ -46,10 +48,12 @@
 <form>
     <div class="container">
         <label for="tlgid"><b>Telegram id</b></label>
-        <input type="text" placeholder="Enter Telegram id" name="tlgid" required on:change={(e) => {telegramId = e.target.value}}>
+        <input type="text" placeholder="Enter Telegram id" required
+               on:change={(e) => {telegramId = e.target.value}}>
 
         <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required on:change={(e) => { password = e.target.value}}>
+        <input type="password" placeholder="Enter Password" required
+               on:change={(e) => { password = e.target.value}}>
     </div>
-    <button on:click={handleLogin}>LOGIN</button>
+    <button on:click={handleSignUp}>SIGN UP</button>
 </form>
