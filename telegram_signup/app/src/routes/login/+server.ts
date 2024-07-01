@@ -13,7 +13,6 @@ function doLogin(login:Login): boolean {
 }
 
 export async function POST({ request }) {
-    console.log('login POST')
     const login: Login = await request.json();
     const authorised = doLogin(login);
     const code = authorised && 201 || 401

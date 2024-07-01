@@ -51,9 +51,10 @@
         const { authorised } = await response.json();
 
         if (authorised) {
-            isValid = true
+            isValid = true;
         }
         else {
+            alert(`Telegram Id or Password is incorrect, please sign up again`);
             goto('/');
         }
     }
@@ -61,19 +62,25 @@
     const handleTokenVerification = async () => {
         const response = await fetch('/token', {
             method: 'POST',
-            body: JSON.stringify({ telegramID: telegramId, password: password }),
+            body: JSON.stringify(token),
             headers: {
                 'Content-Type': 'application/json'
             }
         });
 
-        const { authorised } = await response.json();
+        const { validationResponse } = await response.json();
 
-        if (authorised) {
-            isValid = true
+        if (validationResponse) {
+            alert(`
+            --------
+            ${validationResponse.telegramID}
+            *********
+            Created: ${validationResponse.createdAt}
+            --------
+            `);
         }
         else {
-            console.log('redirect')
+            alert('token is invalid, sign up again');
             goto('/');
         }
     }
@@ -82,14 +89,14 @@
 
 <form>
     <div class="container">
-        <label for="tlgid"><b>Telegram id</b></label>
-        <input type="text" placeholder="Enter Telegram id" name="tlgid" required on:change={(e) => {telegramId = e.target.value}}>
+        <label ><b>Telegram id</b></label>
+        <input type="text" placeholder="Enter Telegram id" required on:change={(e) => {telegramId = e.target.value}}>
 
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required on:change={(e) => { password = e.target.value}}>
+        <label><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" required on:change={(e) => { password = e.target.value}}>
         {#if isValid}
-            <label for="psw"><b>Token</b></label>
-            <input type="text" placeholder="Enter Token" name="token" required on:change={(e) => { token = e.target.value}}>
+            <label><b>Token</b></label>
+            <input type="text" placeholder="Enter Token" required on:change={(e) => { token = e.target.value}}>
         {/if}
     </div>
     {#if isValid}
@@ -97,5 +104,4 @@
         {:else}
         <button class={!telegramId.length || !password.length ? 'login_disabled' : ''} disabled={!telegramId.length || !password.length} on:click={handleLogin}>LOGIN</button>
     {/if}
-
 </form>

@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken'
-import SessionStorage, { Session } from '../../storage';
+import SessionStorage from '../../storage';
 import type { ValidationResponse } from '$lib';
 
 
@@ -15,7 +15,9 @@ function validate(token:string): ValidationResponse | null {
 
 export async function POST({ request }) {
     const token: string = await request.json();
+    console.log('token: ', token)
     const validationResponse = validate(token);
-    const code = validationResponse && 201 || 401
-    return json({ authorised }, { status: code });
+    console.log('validationResponse: ', validationResponse)
+    const code = validationResponse && 200 || 401
+    return json({ validationResponse }, { status: code });
 }
